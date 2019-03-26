@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 
 import "board.dart";
+import "strikethrough.dart";
 
 class MainPage extends StatefulWidget {
 	@override MainState createState() => MainState();
@@ -65,7 +66,8 @@ class MainState extends State<MainPage> {
 								)
 							)
 						).toList()
-					)
+					),
+					foregroundPainter: gameFinished ? Strikethrough(victory) : null
 				)
 			]
 		)
