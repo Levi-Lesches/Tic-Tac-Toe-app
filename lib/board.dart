@@ -32,4 +32,6 @@ class Board {
 		board [index] = turn;
 		turn = next;
 	}
+
+	bool get tie => board.every ((Player cell) => cell != null);
 }

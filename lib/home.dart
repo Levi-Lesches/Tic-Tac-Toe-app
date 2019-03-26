@@ -7,40 +7,65 @@ class MainPage extends StatefulWidget {
 }
 
 class MainState extends State<MainPage> {
-	final Board board = Board();
+	Board board = Board();
 	Player winner;
 	bool get gameFinished => winner != null;
 
 	static BorderSide getBorder(int index, List<int> indices) => 
-		!indices.contains(index) ? const BorderSide() : null;
+		!indices.contains(index) ? const BorderSide() : BorderSide.none;
 
 	@override Widget build (BuildContext context) => Scaffold (
 		appBar: AppBar (title: Text ("Tic Tac Toe")),
-		body: GridView.count (
-			crossAxisCount: 3,
-			children: board.board.asMap().entries.map(  // key = index, 
-				(MapEntry<int, Player> entry) => GestureDetector (
-					onTap: gameFinished ? null
-						: () => setState(() {
-							board.move (entry.key);
-							winner = board.winner;
-						}),
-					child: Expanded (
-						child: Container (
-							child: Text (toString (entry.value) ?? ""),
-							decoration: BoxDecoration (
-								border: Border (
-									top: getBorder(entry.key, const [0, 1, 2]),
-									left: getBorder(entry.key, const [0, 3, 6]),
-									right: getBorder(entry.key, const [2, 5, 8]),
-									bottom: getBorder(entry.key, const [6, 7, 8]),
-
-								)
-							),
+		floatingActionButton: gameFinished || board.tie
+			? FloatingActionButton.extended(
+				tooltip: "Restart",
+				onPressed: () => setState(() {board = Board(); winner = null;}),
+				icon: Icon (Icons.restore),
+				label: Text ("Restart")
+			)
+			: null,
+		body: Column  (
+			mainAxisAlignment: MainAxisAlignment.center,
+			children: [
+				Text (gameFinished
+					? "${toString(winner)} won!"
+					: board.tie 
+						? "It's a tie"
+						: "${toString (board.turn)}'s turn", 
+					style: TextStyle (fontSize: 25)
+				),
+				SizedBox (height: 30),
+				GridView.count (
+					shrinkWrap: true,
+					crossAxisCount: 3,
+					physics: NeverScrollableScrollPhysics(),
+					children: board.board.asMap().entries.map(  // key = index, 
+						(MapEntry<int, Player> entry) => GestureDetector (
+							onTap: gameFinished || board.board [entry.key] != null ? null
+								: () => setState(() {
+									board.move (entry.key);
+									winner = board.winner;
+								}),
+							child: Container (
+								child: Center (
+									child: Text (
+										toString (entry.value) ?? "",
+										style: TextStyle (fontSize: 50)
+									)
+								),
+								decoration: BoxDecoration (
+									border: Border (
+										top: getBorder(entry.key, const [0, 1, 2]),
+										left: getBorder(entry.key, const [0, 3, 6]),
+										right: getBorder(entry.key, const [2, 5, 8]),
+										bottom: getBorder(entry.key, const [6, 7, 8]),
+									)
+								),
+							)
 						)
-					)
+					).toList()
 				)
-			).toList()
+			]
 		)
 	);
 }
