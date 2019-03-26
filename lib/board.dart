@@ -25,7 +25,7 @@ class Board {
 	Player turn = Player.X;
 	Player get next => turn == Player.X ? Player.O : Player.X;
 
-	Player get winner {
+	Victory get winner {
 		for (final Player player in Player.values) {
 			for (
 				final MapEntry<Direction, List<int>> candidate
@@ -34,7 +34,7 @@ class Board {
 				if (candidate.value.every (
 					(int index) => board [index] == player)
 				)
-					return player;
+					return Victory (player, candidate.key);
 			}
 		}
 		return null;
