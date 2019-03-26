@@ -1,5 +1,7 @@
 enum Player {X, O}
 
+String toString (Player player) => player?.toString()?.substring(7);
+
 class Board {
 	static const List<List<int>> candidates = [
 		[0, 1, 2],
