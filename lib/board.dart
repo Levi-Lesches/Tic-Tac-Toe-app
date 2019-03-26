@@ -5,8 +5,8 @@ String toString (Player player) => player?.toString()?.substring(7);
 
 class Victory {
 	final Direction direction;
-	final Player player;
-	const Victory (this.player, this.direction);
+	final Player winner;
+	const Victory (this.winner, this.direction);
 }
 
 class Board {
@@ -24,8 +24,9 @@ class Board {
 	final List<Player> board = List.filled (9, null, growable: false);
 	Player turn = Player.X;
 	Player get next => turn == Player.X ? Player.O : Player.X;
+	bool get tie => board.every ((Player cell) => cell != null);
 
-	Victory get winner {
+	Victory get victory {
 		for (final Player player in Player.values) {
 			for (
 				final MapEntry<Direction, List<int>> candidate
@@ -44,6 +45,4 @@ class Board {
 		board [index] = turn;
 		turn = next;
 	}
-
-	bool get tie => board.every ((Player cell) => cell != null);
 }

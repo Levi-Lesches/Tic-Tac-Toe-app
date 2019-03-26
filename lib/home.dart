@@ -8,8 +8,8 @@ class MainPage extends StatefulWidget {
 
 class MainState extends State<MainPage> {
 	Board board = Board();
-	Player winner;
-	bool get gameFinished => winner != null;
+	Victory victory;
+	bool get gameFinished => victory != null;
 
 	static BorderSide getBorder(int index, List<int> indices) => 
 		!indices.contains(index) ? const BorderSide() : BorderSide.none;
@@ -19,7 +19,7 @@ class MainState extends State<MainPage> {
 		floatingActionButton: gameFinished || board.tie
 			? FloatingActionButton.extended(
 				tooltip: "Restart",
-				onPressed: () => setState(() {board = Board(); winner = null;}),
+				onPressed: () => setState(() {board = Board(); victory = null;}),
 				icon: Icon (Icons.restore),
 				label: Text ("Restart")
 			)
@@ -28,42 +28,44 @@ class MainState extends State<MainPage> {
 			mainAxisAlignment: MainAxisAlignment.center,
 			children: [
 				Text (gameFinished
-					? "${toString(winner)} won!"
+					? "${toString(victory.winner)} won!"
 					: board.tie 
 						? "It's a tie"
 						: "${toString (board.turn)}'s turn", 
 					style: TextStyle (fontSize: 25)
 				),
 				SizedBox (height: 30),
-				GridView.count (
-					shrinkWrap: true,
-					crossAxisCount: 3,
-					physics: NeverScrollableScrollPhysics(),
-					children: board.board.asMap().entries.map(  // key = index, 
-						(MapEntry<int, Player> entry) => GestureDetector (
-							onTap: gameFinished || board.board [entry.key] != null ? null
-								: () => setState(() {
-									board.move (entry.key);
-									winner = board.winner;
-								}),
-							child: Container (
-								child: Center (
-									child: Text (
-										toString (entry.value) ?? "",
-										style: TextStyle (fontSize: 50)
+				CustomPaint (
+					child: GridView.count (
+						shrinkWrap: true,
+						crossAxisCount: 3,
+						physics: NeverScrollableScrollPhysics(),
+						children: board.board.asMap().entries.map(  // key = index, 
+							(MapEntry<int, Player> entry) => GestureDetector (
+								onTap: gameFinished || board.board [entry.key] != null ? null
+									: () => setState(() {
+										board.move (entry.key);
+										victory = board.victory;
+									}),
+								child: Container (
+									child: Center (
+										child: Text (
+											toString (entry.value) ?? "",
+											style: TextStyle (fontSize: 50)
+										)
+									),
+									decoration: BoxDecoration (
+										border: Border (
+											top: getBorder(entry.key, const [0, 1, 2]),
+											left: getBorder(entry.key, const [0, 3, 6]),
+											right: getBorder(entry.key, const [2, 5, 8]),
+											bottom: getBorder(entry.key, const [6, 7, 8]),
+										)
 									)
-								),
-								decoration: BoxDecoration (
-									border: Border (
-										top: getBorder(entry.key, const [0, 1, 2]),
-										left: getBorder(entry.key, const [0, 3, 6]),
-										right: getBorder(entry.key, const [2, 5, 8]),
-										bottom: getBorder(entry.key, const [6, 7, 8]),
-									)
-								),
+								)
 							)
-						)
-					).toList()
+						).toList()
+					)
 				)
 			]
 		)
