@@ -45,4 +45,6 @@ class Board {
 		board [index] = turn;
 		turn = next;
 	}
+
+	List<int> get availableMoves => board.where((Player cell) => cell == null);
 }
