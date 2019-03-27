@@ -10,12 +10,13 @@ class Strikethrough extends CustomPainter {
 
 	@override void paint (Canvas canvas, Size size) {
 		final Paint paint = Paint();
+		paint.strokeWidth = 4;
 		final double z = size.height;
-		assert (z == size.width);
+		// assert (z == size.width);
 		switch (victory.direction) {
 			case Direction.row1: canvas.drawLine (
-				Offset (0, z / 4),
-				Offset (z, z / 4),
+				Offset (0, z / 6),
+				Offset (z, z / 6),
 				paint
 			); break;
 			case Direction.row2: canvas.drawLine (
@@ -24,13 +25,13 @@ class Strikethrough extends CustomPainter {
 				paint
 			); break;
 			case Direction.row3: canvas.drawLine (
-				Offset(0, (3 * z) / 4),
-				Offset(z, (3 * z) / 4),
+				Offset(0, (5 * z) / 6),
+				Offset(z, (5 * z) / 6),
 				paint
 			); break;
 			case Direction.col1: canvas.drawLine (
-				Offset(z / 4, 0),
-				Offset(z / 4, z),
+				Offset(z / 6, 0),
+				Offset(z / 6, z),
 				paint
 			); break;
 			case Direction.col2: canvas.drawLine (
@@ -39,8 +40,8 @@ class Strikethrough extends CustomPainter {
 				paint
 			); break;
 			case Direction.col3: canvas.drawLine (
-				Offset((3 * z) / 4, 0),
-				Offset((3 * z) / 4, z),
+				Offset((5 * z) / 6, 0),
+				Offset((5 * z) / 6, z),
 				paint
 			); break;
 			case Direction.diagonal1: canvas.drawLine (
