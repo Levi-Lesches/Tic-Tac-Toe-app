@@ -13,20 +13,28 @@ class AI {
 		else throw "Invalid board configuration";
 	} 
 
-	// int get bestMove { return negamax ()
-	// 	for (final int moveIndex in currentBoard.availableMoves) {
-	// 		final Board copy = currentBoard.getDummy(moveIndex);
-
-	// 	}
-	// }
-
-	int negamax(Board board) {
-		num result = double.negativeInfinity;
-		for (final int moveIndex in board.availableMoves) {
-			final Board copy = board.getDummy(moveIndex);
-			final int score = evaluate (copy) ?? -negamax (copy);
-			if (score > result) result = score;
+	int get bestMove {
+		num bestScore = double.negativeInfinity;
+		int result;
+		for (final int move in currentBoard.availableMoves) {
+			final Board dummy = currentBoard.getDummy(move);
+			final int score = negamax (dummy);
+			if (score > bestScore) {
+				bestScore = score;
+				result = move;
+			}
 		}
 		return result;
+	}
+
+	int negamax(Board board, [int nega = 1]) {
+		num bestScore = double.negativeInfinity;
+		for (final int move in board.availableMoves) {
+			final Board copy = board.getDummy(move);
+			final int score = evaluate (copy) ?? negamax (copy, -nega);
+			if (score > bestScore)
+				bestScore = score;
+		}
+		return bestScore;
 	}
 }
