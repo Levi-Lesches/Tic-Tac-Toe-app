@@ -32,7 +32,6 @@ class Board {
 
 	Player turn = Player.X;
 	Player get next => turn == Player.X ? Player.O : Player.X;
-	bool get tie => board.every ((Player cell) => cell != null);
 
 	Victory get victory {
 		for (final Player player in Player.values) {

@@ -17,7 +17,7 @@ class MainState extends State<MainPage> {
 
 	@override Widget build (BuildContext context) => Scaffold (
 		appBar: AppBar (title: Text ("Tic Tac Toe")),
-		floatingActionButton: gameFinished || board.tie
+		floatingActionButton: gameFinished
 			? FloatingActionButton.extended(
 				tooltip: "Restart",
 				onPressed: () => setState(() {board = Board(); victory = null;}),
@@ -29,15 +29,15 @@ class MainState extends State<MainPage> {
 			mainAxisAlignment: MainAxisAlignment.center,
 			children: [
 				Text (gameFinished
-					? "${toString(victory.winner)} won!"
-					: board.tie 
+					? victory.winner == null
 						? "It's a tie"
-						: "${toString (board.turn)}'s turn", 
+						: "${toString(victory.winner)} won!"
+					: "${toString (board.turn)}'s turn", 
 					style: TextStyle (fontSize: 25)
 				),
 				SizedBox (height: 30),
 				CustomPaint (
-					foregroundPainter: gameFinished ? Strikethrough(victory) : null,
+					foregroundPainter: victory?.winner != null ? Strikethrough(victory) : null,
 					child: GridView.count (
 						shrinkWrap: true,
 						crossAxisCount: 3,
