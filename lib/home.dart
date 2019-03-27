@@ -37,6 +37,7 @@ class MainState extends State<MainPage> {
 				),
 				SizedBox (height: 30),
 				CustomPaint (
+					foregroundPainter: gameFinished ? Strikethrough(victory) : null,
 					child: GridView.count (
 						shrinkWrap: true,
 						crossAxisCount: 3,
@@ -66,8 +67,7 @@ class MainState extends State<MainPage> {
 								)
 							)
 						).toList()
-					),
-					foregroundPainter: gameFinished ? Strikethrough(victory) : null
+					)
 				)
 			]
 		)

@@ -5,14 +5,12 @@ import "board.dart";
 class Strikethrough extends CustomPainter {
 	final Victory victory;
 	Strikethrough(this.victory);
-
-	// @override void bool shouldRepaint => board.victory != null;
+	@override bool shouldRepaint(_) => true;
 
 	@override void paint (Canvas canvas, Size size) {
 		final Paint paint = Paint();
 		paint.strokeWidth = 4;
 		final double z = size.height;
-		// assert (z == size.width);
 		switch (victory.direction) {
 			case Direction.row1: canvas.drawLine (
 				Offset (0, z / 6),
@@ -56,6 +54,4 @@ class Strikethrough extends CustomPainter {
 			); break;
 		}
 	}
-
-	@override bool shouldRepaint(_) => true;
 }
