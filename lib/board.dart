@@ -1,3 +1,5 @@
+import "range.dart";
+
 enum Player {X, O}
 enum Direction {row1, row2, row3, col1, col2, col3, diagonal1, diagonal2}
 
@@ -10,6 +12,9 @@ class Victory {
 }
 
 class Board {
+	static const List<Player> start = [  // for const purposes 
+		null, null, null, null, null, null, null, null, null
+	];
 	static const Map<Direction, List<int>> candidates = {
 		Direction.row1: [0, 1, 2],
 		Direction.row2: [3, 4, 5],
@@ -21,7 +26,9 @@ class Board {
 		Direction.diagonal2: [2, 4, 6],
 	};
 
-	final List<Player> board = List.filled (9, null, growable: false);
+	final List<Player> board;
+	Board ([this.board = start]);
+
 	Player turn = Player.X;
 	Player get next => turn == Player.X ? Player.O : Player.X;
 	bool get tie => board.every ((Player cell) => cell != null);
@@ -46,5 +53,15 @@ class Board {
 		turn = next;
 	}
 
-	List<int> get availableMoves => board.where((Player cell) => cell == null);
+	Iterable<int> get availableMoves sync* {
+		for (final Pair<Player> cell in enumerate<Player> (board)) {
+			if (cell.value == null) yield cell.index;
+		}
+	}
+
+	Board getDummy (int index) {
+		final List<Player> copy = board.toList(growable: false);
+		copy [index] = turn;
+		return Board (copy);
+	}
 }
