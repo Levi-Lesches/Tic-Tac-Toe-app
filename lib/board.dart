@@ -9,6 +9,7 @@ class Victory {
 	final Direction direction;
 	final Player winner;
 	const Victory (this.winner, this.direction);
+	factory Victory.tie() => Victory (null, null);
 }
 
 class Board {
@@ -45,7 +46,8 @@ class Board {
 					return Victory (player, candidate.key);
 			}
 		}
-		return null;
+		if (board.every ((Player cell) => cell != null)) return Victory.tie();
+		else return null;
 	}
 
 	void move (int index) {
