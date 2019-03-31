@@ -16,9 +16,9 @@ class AI {
 	int get bestMove {
 		num bestScore = double.negativeInfinity;
 		int result;
-		for (final int move in currentBoard.availableMoves) {
+		for (final int move in currentBoard.moves) {
 			final Board dummy = currentBoard.getDummy(move);
-			final int score = negamax (dummy);
+			final int score = negamax (dummy) * -1;
 			if (score > bestScore) {
 				bestScore = score;
 				result = move;
@@ -27,13 +27,13 @@ class AI {
 		return result;
 	}
 
-	int negamax(Board board, [int nega = 1]) {
-		num bestScore = double.negativeInfinity;
-		for (final int move in board.availableMoves) {
+	int negamax(Board board, [int nega = -1]) {
+		num result = double.negativeInfinity;
+		for (final int move in board.moves) {
 			final Board copy = board.getDummy(move);
-			final int score = nega * (evaluate (copy) ?? negamax (copy, -nega));
-			if (score > bestScore) bestScore = score;
+			final int score = nega * (evaluate(copy) ?? negamax(copy, -nega));
+			if (score > result) result = score;
 		}
-		return bestScore;
+		return result;
 	}
 }
