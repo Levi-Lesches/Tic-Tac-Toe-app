@@ -15,11 +15,11 @@ class MainPage extends StatefulWidget {
 }
 
 class MainState extends State<MainPage> {
-	// final Board board = Board();
 	final Board board = Board();
 	AI ai;
 	Victory victory;
 	bool get gameFinished => victory != null;
+	static Duration aiDelay = Duration(milliseconds: 500);
 
 	MainState() {ai = AI (board);}
 
@@ -35,8 +35,7 @@ class MainState extends State<MainPage> {
 				victory = board.victory;
 			});
 			if (widget.ai && victory == null) Timer (
-				Duration (milliseconds: 500), 
-				() => setState(
+				aiDelay, () => setState(
 					() {
 						board.move(ai.bestMove);
 						victory = board.victory;
@@ -45,6 +44,12 @@ class MainState extends State<MainPage> {
 			);
 		}
 		return move;
+	}
+
+	@override void initState() {
+		super.initState();
+		if (widget.ai && widget.user != Player.X)  // user wants us to go first
+			Timer (aiDelay, () => board.move(ai.bestMove));
 	}
 
 	@override Widget build (BuildContext context) => Scaffold (
