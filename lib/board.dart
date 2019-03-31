@@ -26,7 +26,7 @@ class Board {
 	};
 
 	final List<Player> board;
-	Board ([entry]) : board = entry ?? List.filled (0, null, growable: false);
+	Board ([entry]) : board = entry ?? List.filled (9, null, growable: false);
 
 	Player turn = Player.X;
 	Player get next => turn == Player.X ? Player.O : Player.X;
@@ -55,6 +55,12 @@ class Board {
 	void move (int index) {
 		board [index] = turn;
 		turn = next;
+	}
+
+	void reset() {
+		turn = Player.X;
+		for (final int index in range (board.length)) 
+			board [index] = null;
 	}
 
 	Iterable<int> get moves => range (board.length).where(

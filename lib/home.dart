@@ -1,26 +1,58 @@
 import "package:flutter/material.dart";
 
+// backend
 import "board.dart";
+import "ai.dart";
+// ui
 import "strikethrough.dart";
+import "dart:async";  // Timer to delay AI moves
 
 class MainPage extends StatefulWidget {
+	final bool ai;
+	final Player user;
+	MainPage(this.ai, this.user);
 	@override MainState createState() => MainState();
 }
 
 class MainState extends State<MainPage> {
-	Board board = Board();
+	// final Board board = Board();
+	final Board board = Board();
+	AI ai;
 	Victory victory;
 	bool get gameFinished => victory != null;
 
+	MainState() {ai = AI (board);}
+
 	static BorderSide getBorder(int index, List<int> indices) => 
 		!indices.contains(index) ? const BorderSide() : BorderSide.none;
+
+	void Function() getMoveFunction (int index) {
+		if (gameFinished || board.board [index] != null) return null;
+
+		void move() {
+			setState((){
+				board.move(index);
+				victory = board.victory;
+			});
+			if (widget.ai && victory == null) Timer (
+				Duration (milliseconds: 500), 
+				() => setState(
+					() {
+						board.move(ai.bestMove);
+						victory = board.victory;
+					}
+				)
+			);
+		}
+		return move;
+	}
 
 	@override Widget build (BuildContext context) => Scaffold (
 		appBar: AppBar (title: Text ("Tic Tac Toe")),
 		floatingActionButton: gameFinished
 			? FloatingActionButton.extended(
 				tooltip: "Restart",
-				onPressed: () => setState(() {board = Board(); victory = null;}),
+				onPressed: () => setState(() {board.reset(); victory = null;}),
 				icon: Icon (Icons.restore),
 				label: Text ("Restart")
 			)
@@ -42,7 +74,7 @@ class MainState extends State<MainPage> {
 						shrinkWrap: true,
 						crossAxisCount: 3,
 						physics: NeverScrollableScrollPhysics(),
-						children: board.board.asMap().entries.map(  // key = index, 
+						children: board.board.asMap().entries.map(  // entry.key = index
 							(MapEntry<int, Player> entry) => GestureDetector (
 								onTap: gameFinished || board.board [entry.key] != null ? null
 									: () => setState(() {
