@@ -3,7 +3,7 @@ import "range.dart";
 enum Player {X, O}
 enum Direction {row1, row2, row3, col1, col2, col3, diagonal1, diagonal2}
 
-String toString (Player player) => player?.toString()?.substring(7);
+String playerString (Player player) => player?.toString()?.substring(7);
 
 class Victory {
 	final Direction direction;
@@ -13,9 +13,7 @@ class Victory {
 }
 
 class Board {
-	static const List<Player> start = [  // for const purposes 
-		null, null, null, null, null, null, null, null, null
-	];
+	// static final List<Player> start = List.filled (9, null, growable: false);
 	static const Map<Direction, List<int>> candidates = {
 		Direction.row1: [0, 1, 2],
 		Direction.row2: [3, 4, 5],
@@ -28,10 +26,16 @@ class Board {
 	};
 
 	final List<Player> board;
-	Board ([this.board = start]);
+	Board ([entry]) : board = entry ?? List.filled (0, null, growable: false);
 
 	Player turn = Player.X;
 	Player get next => turn == Player.X ? Player.O : Player.X;
+
+	@override String toString() => const [0, 3, 6].map (
+		(int index) => " " + board.getRange (index, index + 3).map(
+			(Player cell) => playerString (cell) ?? " "
+		).join(" | ") + "\n"
+	).join (("+---" * 3 + "\n").substring (1));
 
 	Victory get victory {
 		for (final Player player in Player.values) {
@@ -41,8 +45,7 @@ class Board {
 			) {
 				if (candidate.value.every (
 					(int index) => board [index] == player)
-				)
-					return Victory (player, candidate.key);
+				) return Victory (player, candidate.key);
 			}
 		}
 		if (board.every ((Player cell) => cell != null)) return Victory.tie();
@@ -54,15 +57,13 @@ class Board {
 		turn = next;
 	}
 
-	Iterable<int> get availableMoves sync* {
-		for (final Pair<Player> cell in enumerate<Player> (board)) {
-			if (cell.value == null) yield cell.index;
-		}
-	}
+	Iterable<int> get moves => range (board.length).where(
+		(int index) => board [index] == null
+	);
 
 	Board getDummy (int index) {
 		final List<Player> copy = board.toList(growable: false);
 		copy [index] = turn;
-		return Board (copy);
+		return Board (copy)..turn = next;
 	}
 }

@@ -10,7 +10,7 @@ class AI {
 		else if (victory.winner == null) return 0;
 		else if (victory.winner == currentBoard.turn) return 1;
 		else if (victory.winner == currentBoard.next) return -1;
-		else throw "Invalid board configuration";
+		else throw "Invalid board configuration";  // for linting
 	} 
 
 	int get bestMove {
@@ -31,9 +31,8 @@ class AI {
 		num bestScore = double.negativeInfinity;
 		for (final int move in board.availableMoves) {
 			final Board copy = board.getDummy(move);
-			final int score = evaluate (copy) ?? negamax (copy, -nega);
-			if (score > bestScore)
-				bestScore = score;
+			final int score = nega * (evaluate (copy) ?? negamax (copy, -nega));
+			if (score > bestScore) bestScore = score;
 		}
 		return bestScore;
 	}
