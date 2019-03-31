@@ -15,11 +15,13 @@ class MainPage extends StatefulWidget {
 }
 
 class MainState extends State<MainPage> {
-	final Board board = Board();
-	AI ai;
-	Victory victory;
-	bool get gameFinished => victory != null;
 	static Duration aiDelay = Duration(milliseconds: 500);
+
+	final Board board = Board();
+	Victory victory;
+	AI ai;
+
+	bool get gameFinished => victory != null;
 
 	MainState() {ai = AI (board);}
 
