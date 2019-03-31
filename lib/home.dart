@@ -31,8 +31,8 @@ class MainState extends State<MainPage> {
 				Text (gameFinished
 					? victory.winner == null
 						? "It's a tie"
-						: "${toString(victory.winner)} won!"
-					: "${toString (board.turn)}'s turn", 
+						: "${playerString(victory.winner)} won!"
+					: "${playerString (board.turn)}'s turn", 
 					style: TextStyle (fontSize: 25)
 				),
 				SizedBox (height: 30),
@@ -52,7 +52,7 @@ class MainState extends State<MainPage> {
 								child: Container (
 									child: Center (
 										child: Text (
-											toString (entry.value) ?? "",
+											playerString (entry.value) ?? "",
 											style: TextStyle (fontSize: 50)
 										)
 									),
