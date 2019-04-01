@@ -13,7 +13,6 @@ class Victory {
 }
 
 class Board {
-	// static final List<Player> start = List.filled (9, null, growable: false);
 	static const Map<Direction, List<int>> candidates = {
 		Direction.row1: [0, 1, 2],
 		Direction.row2: [3, 4, 5],

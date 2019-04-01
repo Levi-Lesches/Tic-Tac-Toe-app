@@ -15,7 +15,7 @@ class MainPage extends StatefulWidget {
 }
 
 class MainState extends State<MainPage> {
-	static Duration aiDelay = Duration(milliseconds: 500);
+	static Duration aiDelay = Duration(milliseconds: 250);
 
 	final Board board = Board();
 	Victory victory;
@@ -28,22 +28,26 @@ class MainState extends State<MainPage> {
 	static BorderSide getBorder(int index, List<int> indices) => 
 		!indices.contains(index) ? const BorderSide() : BorderSide.none;
 
+	void aiMove ([bool checkWinner = true, int defaultPosition]) => Timer (
+		aiDelay, () => setState(() {
+			board.move(defaultPosition ?? ai.bestMove);
+			if (checkWinner) victory = board.victory;
+		})
+	);
+
 	void Function() getMoveFunction (int index) {
-		if (gameFinished || board.board [index] != null) return null;
+		if (
+			gameFinished || 
+			board.board [index] != null || 
+			(widget.ai && widget.user != board.turn)
+		) return null;
 
 		void move() {
 			setState((){
 				board.move(index);
 				victory = board.victory;
 			});
-			if (widget.ai && victory == null) Timer (
-				aiDelay, () => setState(
-					() {
-						board.move(ai.bestMove);
-						victory = board.victory;
-					}
-				)
-			);
+			if (widget.ai && victory == null) aiMove();
 		}
 		return move;
 	}
@@ -51,7 +55,7 @@ class MainState extends State<MainPage> {
 	@override void initState() {
 		super.initState();
 		if (widget.ai && widget.user != Player.X)  // user wants us to go first
-			Timer (aiDelay, () => board.move(ai.bestMove));
+			aiMove(false);
 	}
 
 	@override Widget build (BuildContext context) => Scaffold (
@@ -59,7 +63,11 @@ class MainState extends State<MainPage> {
 		floatingActionButton: gameFinished
 			? FloatingActionButton.extended(
 				tooltip: "Restart",
-				onPressed: () => setState(() {board.reset(); victory = null;}),
+				onPressed: () => setState(() {
+					board.reset(); 
+					victory = null;
+					if (widget.ai && widget.user != Player.X) aiMove(false, 0);
+				}),
 				icon: Icon (Icons.restore),
 				label: Text ("Restart")
 			)
@@ -83,11 +91,12 @@ class MainState extends State<MainPage> {
 						physics: NeverScrollableScrollPhysics(),
 						children: board.board.asMap().entries.map(  // entry.key = index
 							(MapEntry<int, Player> entry) => GestureDetector (
-								onTap: gameFinished || board.board [entry.key] != null ? null
-									: () => setState(() {
-										board.move (entry.key);
-										victory = board.victory;
-									}),
+								// onTap: gameFinished || board.board [entry.key] != null ? null
+								// 	: () => setState(() {
+								// 		board.move (entry.key);
+								// 		victory = board.victory;
+								// 	}),
+								onTap: getMoveFunction(entry.key),
 								child: Container (
 									child: Center (
 										child: Text (
