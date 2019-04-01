@@ -15,7 +15,7 @@ class MainPage extends StatefulWidget {
 }
 
 class MainState extends State<MainPage> {
-	static Duration aiDelay = Duration(milliseconds: 250);
+	static const Duration aiDelay = Duration(milliseconds: 500);
 
 	final Board board = Board();
 	Victory victory;
@@ -55,7 +55,7 @@ class MainState extends State<MainPage> {
 	@override void initState() {
 		super.initState();
 		if (widget.ai && widget.user != Player.X)  // user wants us to go first
-			aiMove(false);
+			aiMove(false, 0);
 	}
 
 	@override Widget build (BuildContext context) => Scaffold (
@@ -91,11 +91,6 @@ class MainState extends State<MainPage> {
 						physics: NeverScrollableScrollPhysics(),
 						children: board.board.asMap().entries.map(  // entry.key = index
 							(MapEntry<int, Player> entry) => GestureDetector (
-								// onTap: gameFinished || board.board [entry.key] != null ? null
-								// 	: () => setState(() {
-								// 		board.move (entry.key);
-								// 		victory = board.victory;
-								// 	}),
 								onTap: getMoveFunction(entry.key),
 								child: Container (
 									child: Center (

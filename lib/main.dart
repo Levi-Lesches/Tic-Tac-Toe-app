@@ -6,7 +6,7 @@ import "board.dart" show Player, playerString;
 void main() => runApp(
   MaterialApp (
     title: "Tic Tac Toe",
-    home: MainPage(true, Player.O)
+    home: EntryPage()
   )  
 );
 
@@ -21,22 +21,29 @@ class EntryState extends State<EntryPage> {
   @override Widget build(BuildContext context) => Scaffold (
     appBar: AppBar (title: Text ("Tic Tac Toe")),
     body: Column (
+      // mainAxisSize: MainAxisSize.max,
+      // children: [
+      // Column (
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
-      children: <RadioListTile<bool>> [
+      mainAxisSize: MainAxisSize.max,
+      // mainAxisSize: MainAxisSize.min,
+      children: [
+        Text ("Welcome to Tic Tac Toe!", style: TextStyle (fontSize: 25)),
+        SizedBox (height: 25),
         RadioListTile<bool> (
           value: true,
           groupValue: aiChoice,
           onChanged: updateChoice,
           title: Text ("Play against the AI"),
           subtitle: Text ("Choose either X or O"),
-          selected: aiChoice,
-          secondary: DropdownButton (
+          secondary: DropdownButton<Player> (
             value: userChoice,
             onChanged: updateUser,
             items: Player.values.map(
               (Player player) => DropdownMenuItem<Player> (
-                child: ListTile (title: Text (playerString (player)))
+                child: Text (playerString (player)),
+                value: player
               )
             ).toList(),
           )
@@ -44,12 +51,11 @@ class EntryState extends State<EntryPage> {
         RadioListTile<bool> (
           value: false,
           groupValue: aiChoice,
-          selected: !aiChoice,
           title: Text ("Play against a friend"),
           subtitle: Text ("Decide between yourselves who will be X and O"),
           onChanged: updateChoice
         ),
-      ]
+      ]//)]
     ),
     floatingActionButton: FloatingActionButton.extended(
       icon: const Icon (Icons.done),
