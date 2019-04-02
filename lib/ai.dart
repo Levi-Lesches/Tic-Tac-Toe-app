@@ -31,7 +31,9 @@ class AI {
 		num result = double.negativeInfinity;
 		for (final int move in board.moves) {
 			final Board copy = board.getDummy(move);
-			final num score = nega * (evaluate(copy) ?? negamax(copy, -nega));
+			num score = evaluate (copy);
+			if (score == null) score = -negamax (copy, -nega);
+			else score *= nega;
 			if (score > result) result = score;
 		}
 		return result;
