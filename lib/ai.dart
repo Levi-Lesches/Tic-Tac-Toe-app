@@ -18,6 +18,7 @@ class AI {
 		int result;
 		for (final int move in currentBoard.moves) {
 			final Board dummy = currentBoard.getDummy(move);
+			if (evaluate(dummy) == 1) return move;
 			final num score = negamax (dummy) * -1;
 			if (score > bestScore) {
 				bestScore = score;
